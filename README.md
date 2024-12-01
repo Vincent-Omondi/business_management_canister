@@ -1,85 +1,136 @@
-# icp_rust_message_board_contract
+# Business Management Canister
 
-### Requirements
-* rustc 1.64 or higher
-```bash
-$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
-$ source "$HOME/.cargo/env"
-```
-* rust wasm32-unknown-unknown target
-```bash
-$ rustup target add wasm32-unknown-unknown
-```
-* candid-extractor
-```bash
-$ cargo install candid-extractor
-```
-* install `dfx`
-```bash
-$ DFX_VERSION=0.15.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-$ echo 'export PATH="$PATH:$HOME/bin"' >> "$HOME/.bashrc"
-$ source ~/.bashrc
-$ dfx start --background
-```
+The **Business Management Canister** is a backend application for managing business operations using the Internet Computer Protocol (ICP). This canister provides functionalities for inventory management, sales tracking, and financial overviews, implemented in Rust.
 
-If you want to start working on your project right away, you might want to try the following commands:
+---
 
-```bash
-$ cd icp_rust_boilerplate/
-$ dfx help
-$ dfx canister --help
+## Features
+
+1. **Inventory Management**
+   - Add, update, and remove inventory items.
+   - Monitor stock levels and receive reorder suggestions.
+
+2. **Sales Tracking**
+   - Record sales transactions.
+   - Track historical sales data.
+
+3. **Financial Overview**
+   - Calculate total sales revenue.
+   - Evaluate the value of current inventory.
+
+---
+
+## Project Structure
+
 ```
-
-## Update dependencies
-
-update the `dependencies` block in `/src/{canister_name}/Cargo.toml`:
-```
-[dependencies]
-candid = "0.9.9"
-ic-cdk = "0.11.1"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1.0"
-ic-stable-structures = { git = "https://github.com/lwshang/stable-structures.git", branch = "lwshang/update_cdk"}
+business_management_canister/
+├── Cargo.toml                # Configuration for the Rust canister.
+├── dfx.json                  # DFX project configuration.
+├── src/
+│   ├── icp_rust_boilerplate_backend/
+│       ├── Cargo.toml        # Rust package configuration for the backend.
+│       ├── icp_rust_boilerplate_backend.did # Candid interface.
+│       ├── src/lib.rs        # Main application logic.
+├── package.json              # Scripts for deployment and candid generation.
 ```
 
-## did autogenerate
+---
 
-Add this script to the root directory of the project:
-```
-https://github.com/buildwithjuno/juno/blob/main/scripts/did.sh
-```
+## Installation and Setup
 
-Update line 16 with the name of your canister:
-```
-https://github.com/buildwithjuno/juno/blob/main/scripts/did.sh#L16
-```
+### Prerequisites
 
-After this run this script to generate Candid.
-Important note!
+- **Rust Compiler** (1.64 or higher)
+  ```bash
+  curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+  source "$HOME/.cargo/env"
+  ```
 
-You should run this script each time you modify/add/remove exported functions of the canister.
-Otherwise, you'll have to modify the candid file manually.
+- **WebAssembly Target for Rust**
+  ```bash
+  rustup target add wasm32-unknown-unknown
+  ```
 
-Also, you can add package json with this content:
-```
-{
-    "scripts": {
-        "generate": "./did.sh && dfx generate",
-        "gen-deploy": "./did.sh && dfx generate && dfx deploy -y"
-      }
-}
-```
+- **Candid Extractor**
+  ```bash
+  cargo install candid-extractor
+  ```
 
-and use commands `npm run generate` to generate candid or `npm run gen-deploy` to generate candid and to deploy a canister.
+- **DFX SDK**
+  ```bash
+  DFX_VERSION=0.15.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+  echo 'export PATH="$PATH:$HOME/bin"' >> "$HOME/.bashrc"
+  source ~/.bashrc
+  ```
 
-## Running the project locally
+### Local Deployment
 
-If you want to test your project locally, you can use the following commands:
+1. Start the Internet Computer local replica:
+   ```bash
+   dfx start --background
+   ```
 
-```bash
-# Starts the replica, running in the background
-$ dfx start --background
+2. Deploy the canister:
+   ```bash
+   dfx deploy
+   ```
 
-# Deploys your canisters to the replica and generates your candid interface
-$ dfx deploy
-```
+### Generating Candid File
+
+To automatically regenerate the candid file after changes:
+1. Add the script located [here](https://github.com/buildwithjuno/juno/blob/main/scripts/did.sh) to the root of your project.
+2. Update line 16 of the script with your canister name.
+3. Use the following command:
+   ```bash
+   ./did.sh && dfx generate
+   ```
+
+   Alternatively, you can use the following in `package.json`:
+   ```json
+   {
+     "scripts": {
+       "generate": "./did.sh && dfx generate",
+       "gen-deploy": "./did.sh && dfx generate && dfx deploy -y"
+     }
+   }
+   ```
+   Run `npm run generate` or `npm run gen-deploy` as needed.
+
+---
+
+## Code Overview
+
+### Key Functions
+
+- **Inventory Operations**
+  - `add_item(name, quantity, price)`
+  - `update_item(id, name, quantity, price)`
+  - `remove_item(id)`
+
+- **Sales Management**
+  - `record_sale(items)` - Logs sales transactions.
+  - `get_sales()` - Retrieves sales history.
+
+- **Queries**
+  - `get_inventory()` - Fetches inventory details.
+  - `financial_overview()` - Provides sales revenue and inventory value.
+  - `reorder_suggestions(threshold)` - Suggests items to reorder.
+
+---
+
+## Contributing
+
+Contributions are welcome! Please submit a pull request or create an issue for any feature requests or bug reports.
+
+---
+
+## License
+
+This project is licensed under the MIT License. 
+---
+
+## Resources
+
+- [Dfinity SDK Documentation](https://sdk.dfinity.org/docs/)
+- [Candid Language Reference](https://internetcomputer.org/docs/current/developer-docs/quickstart/candid-intro/)
+- [Rust Programming Language](https://www.rust-lang.org/)
