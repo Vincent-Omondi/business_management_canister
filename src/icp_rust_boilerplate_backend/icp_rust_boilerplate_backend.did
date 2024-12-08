@@ -1,3 +1,33 @@
+type InventoryItem = record {
+  id : nat64;
+  name : text;
+  quantity : nat64;
+  price : float64;
+};
+type Result = variant { Ok : nat64; Err : text };
+type Result_1 = variant { Ok : SaleRecord; Err : text };
+type Result_2 = variant { Ok; Err : text };
+type SaleItem = record {
+  id : nat64;
+  name : text;
+  unit_price : float64;
+  quantity : nat64;
+};
+type SaleRecord = record {
+  total_amount : float64;
+  timestamp : nat64;
+  items : vec SaleItem;
+};
 service : {
-    "greet": (text) -> (text) query;
+  add_item : (text, nat64, float64) -> (Result);
+  financial_overview : () -> (float64, float64) query;
+  get_inventory : () -> (vec InventoryItem) query;
+  get_item_details : (nat64) -> (opt InventoryItem) query;
+  get_sales : () -> (vec SaleRecord) query;
+  get_top_selling_items : (nat64) -> (vec record { text; nat64 }) query;
+  record_sale : (vec record { nat64; nat64 }) -> (Result_1);
+  remove_item : (nat64) -> (Result_2);
+  reorder_suggestions : (nat64) -> (vec InventoryItem) query;
+  search_item_by_name : (text) -> (vec InventoryItem) query;
+  update_item : (nat64, opt text, opt nat64, opt float64) -> (Result_2);
 }
